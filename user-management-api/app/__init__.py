@@ -6,6 +6,7 @@ from app.routes.user_routes import user_bp
 from app.errors.handlers import register_error_handlers
 from app.logging_config import configure_logging
 from app.routes.auth_routes import auth_bp
+from app.commands import seed
 
 
 
@@ -26,5 +27,7 @@ def create_app():
     app.register_blueprint(auth_bp)
 
     register_error_handlers(app)
+
+    app.cli.add_command(seed)
 
     return app

@@ -23,3 +23,8 @@ class ValidationError(AppError):
 class UnauthorizedError(AppError):
     def __init__(self, message="Invalid email or password"):
         super().__init__(message, 401)
+
+
+class ForbiddenError(AppError):
+    def __init__(self, message="Access forbidden"):
+        super().__init__(message, 403)

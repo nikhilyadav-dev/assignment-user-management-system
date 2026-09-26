@@ -4,7 +4,7 @@ from app.extensions import db
 from app.models.user import User
 
 
-def create_user(name, email, role):
+def create_user(name, email, role, password_hash):
     user = User(
         name=name,
         email=email,

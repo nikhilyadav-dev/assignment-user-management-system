@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.utils.validators import is_valid_email
 from app.services.auth_service import hash_password
+from flask_jwt_extended import jwt_required, get_jwt
 
 from app.services.user_service import (
     create_user,
@@ -12,14 +13,24 @@ from app.services.user_service import (
 from app.errors.exceptions import (
     ConflictError,
     NotFoundError,
-    ValidationError
+    ValidationError,
+    ForbiddenError
 )
  
 user_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @user_bp.route("", methods=["POST"])
+@jwt_required()
 def create_user_route():
+
+    
+
+    claims = get_jwt()
+
+    if claims.get("role") != "admin":
+        raise ForbiddenError("Admin access required")
+
     data = request.get_json(silent=True)
 
     if not data:
@@ -65,6 +76,7 @@ def create_user_route():
 
 
 @user_bp.route("", methods=["GET"])
+@jwt_required()
 def get_users():
     search = request.args.get("search")
 
@@ -105,10 +117,9 @@ def get_users():
 
 
 @user_bp.route("/<int:user_id>", methods=["GET"])
+@jwt_required()
 def get_user(user_id):
     user = get_user_by_id(user_id)
-
-  
 
     if user is None:
           raise NotFoundError("User not found")
