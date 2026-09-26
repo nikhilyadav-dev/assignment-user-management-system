@@ -18,3 +18,8 @@ class ConflictError(AppError):
 class ValidationError(AppError):
     def __init__(self, message="Validation failed"):
         super().__init__(message, 400)
+
+
+class UnauthorizedError(AppError):
+    def __init__(self, message="Invalid email or password"):
+        super().__init__(message, 401)

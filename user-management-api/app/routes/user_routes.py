@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app.utils.validators import is_valid_email
-
+from app.services.auth_service import hash_password
 
 from app.services.user_service import (
     create_user,
@@ -30,10 +30,11 @@ def create_user_route():
     name = data.get("name")
     email = data.get("email")
     role = data.get("role")
+    password = data.get("password")
 
-    if not name or not email or not role:
+    if not name or not email or not role or not password:
         raise ValidationError(
-        "Name, email, and role are required"
+        "Name, email, and role, password are required"
     )
 
     if not is_valid_email(email):
@@ -43,10 +44,13 @@ def create_user_route():
     if email_exists(email):
       raise ConflictError("Email already exists")
 
+    password_hash = hash_password(password)
+
     user = create_user(
         name=name,
         email=email,
-        role=role
+        role=role,
+        password_hash=password_hash
     )
 
     return jsonify({
@@ -103,6 +107,8 @@ def get_users():
 @user_bp.route("/<int:user_id>", methods=["GET"])
 def get_user(user_id):
     user = get_user_by_id(user_id)
+
+  
 
     if user is None:
           raise NotFoundError("User not found")

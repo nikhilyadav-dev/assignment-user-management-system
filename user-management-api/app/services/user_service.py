@@ -8,7 +8,8 @@ def create_user(name, email, role):
     user = User(
         name=name,
         email=email,
-        role=role
+        role=role,
+        password_hash=password_hash
     )
 
     db.session.add(user)
