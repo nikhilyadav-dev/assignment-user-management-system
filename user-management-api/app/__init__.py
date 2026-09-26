@@ -1,8 +1,10 @@
-from flask import Flask;
+from flask import Flask
 
 from app.config import Config
 from app.extensions import db
 from app.routes.user_routes import user_bp
+from app.errors.handlers import register_error_handlers
+
 
 
 def create_app():
@@ -13,5 +15,7 @@ def create_app():
     db.init_app(app)
 
     app.register_blueprint(user_bp)
+
+    register_error_handlers(app)
 
     return app

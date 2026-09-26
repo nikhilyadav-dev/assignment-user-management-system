@@ -9,40 +9,39 @@ from app.services.user_service import (
     email_exists
 )
 
+from app.errors.exceptions import (
+    ConflictError,
+    NotFoundError,
+    ValidationError
+)
+
 user_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
 @user_bp.route("", methods=["POST"])
 def create_user_route():
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if not data:
-        return jsonify({
-            "success": False,
-            "error": "Request body is required"
-        }), 400
+      raise ValidationError(
+               "Request body is required")
+       
 
     name = data.get("name")
     email = data.get("email")
     role = data.get("role")
 
     if not name or not email or not role:
-        return jsonify({
-            "success": False,
-            "error": "Name, email, and role are required"
-        }), 400
+        raise ValidationError(
+        "Name, email, and role are required"
+    )
 
     if not is_valid_email(email):
-        return jsonify({
-            "success": False,
-            "error": "Invalid email format"
-        }), 400
-
+        raise ValidationError(
+        "Invalid email format"
+    )
     if email_exists(email):
-      return jsonify({
-        "success": False,
-        "error": "Email already exists"
-    }), 409
+      raise ConflictError("Email already exists")
 
     user = create_user(
         name=name,
@@ -69,16 +68,12 @@ def get_users():
     limit = request.args.get("limit", 10, type=int)
 
     if page < 1:
-     return jsonify({
-        "success": False,
-        "error": "Page must be greater than 0"
-    }), 400
+      raise ValidationError( "Page must be greater than 0")
+
+    
 
     if limit < 1 or limit > 100:
-      return jsonify({
-        "success": False,
-        "error": "Limit must be between 1 and 100"
-    }), 400
+      raise ValidationError( "Limit must be between 1 and 100")
 
     users, total = get_all_users(
         search=search,
@@ -110,10 +105,7 @@ def get_user(user_id):
     user = get_user_by_id(user_id)
 
     if user is None:
-        return jsonify({
-            "success": False,
-            "error": "User not found"
-        }), 404
+          raise NotFoundError("User not found")
 
     return jsonify({
         "success": True,
