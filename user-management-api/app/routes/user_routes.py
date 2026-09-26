@@ -14,7 +14,7 @@ from app.errors.exceptions import (
     NotFoundError,
     ValidationError
 )
-
+ 
 user_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
