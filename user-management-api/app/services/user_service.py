@@ -47,3 +47,6 @@ def get_all_users(search=None, page=1, limit=10):
 
 def get_user_by_id(user_id):
     return db.session.get(User, user_id)
+
+def email_exists(email):
+    return User.query.filter_by(email=email).first() is not None
