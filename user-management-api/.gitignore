@@ -1,9 +1,18 @@
+```text
+# Environment
 .env
 venv/
+.venv/
+
+# Python
 __pycache__/
 *.pyc
+
+# Testing
 .pytest_cache/
 .coverage
 
-app.log
+# Logs
 *.log
+app.log
+```

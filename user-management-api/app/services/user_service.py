@@ -3,8 +3,31 @@ from sqlalchemy import or_
 from app.extensions import db
 from app.models.user import User
 
+from app.services.auth_service import hash_password 
+from app.utils.validators import is_valid_email 
+from app.errors.exceptions import ConflictError, ValidationError
 
-def create_user(name, email, role, password_hash):
+
+def create_user(name, email, role, password):
+
+    # Reuired Field
+    if not name or not email or not role or not password:
+        raise ValidationError(
+        "Name, email, role, and password are required"
+    )
+
+    # Email Format Validation
+    if not is_valid_email(email):
+        raise ValidationError(
+        "Invalid email format"
+    )
+
+    # Duplicate Email Validation
+    if email_exists(email):
+      raise ConflictError("Email already exists")
+
+    password_hash = hash_password(password)
+
     user = User(
         name=name,
         email=email,
@@ -12,8 +35,12 @@ def create_user(name, email, role, password_hash):
         password_hash=password_hash
     )
 
-    db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.add(user)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        raise
 
     return user
 

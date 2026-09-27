@@ -1,67 +1,40 @@
 from flask import Blueprint, jsonify, request
-from app.utils.validators import is_valid_email
-from app.services.auth_service import hash_password
-from flask_jwt_extended import jwt_required, get_jwt
+from flask_jwt_extended import jwt_required
+from app.utils.auth import admin_required
 
 from app.services.user_service import (
     create_user,
     get_all_users,
     get_user_by_id,
-    email_exists
+  
 )
 
 from app.errors.exceptions import (
-    ConflictError,
     NotFoundError,
     ValidationError,
-    ForbiddenError
 )
  
 user_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
+# CREAT USER ROUTE
 @user_bp.route("", methods=["POST"])
-@jwt_required()
+@admin_required
 def create_user_route():
-
-    
-
-    claims = get_jwt()
-
-    if claims.get("role") != "admin":
-        raise ForbiddenError("Admin access required")
 
     data = request.get_json(silent=True)
 
+    # Body Required Validation
     if not data:
       raise ValidationError(
                "Request body is required")
-       
-
-    name = data.get("name")
-    email = data.get("email")
-    role = data.get("role")
-    password = data.get("password")
-
-    if not name or not email or not role or not password:
-        raise ValidationError(
-        "Name, email, and role, password are required"
-    )
-
-    if not is_valid_email(email):
-        raise ValidationError(
-        "Invalid email format"
-    )
-    if email_exists(email):
-      raise ConflictError("Email already exists")
-
-    password_hash = hash_password(password)
+    
 
     user = create_user(
-        name=name,
-        email=email,
-        role=role,
-        password_hash=password_hash
+        name = data.get("name"),
+        email = data.get("email"),
+        role = data.get("role"),
+        password = data.get("password")
     )
 
     return jsonify({
@@ -75,6 +48,7 @@ def create_user_route():
     }), 201
 
 
+# GET USERS ROUTE
 @user_bp.route("", methods=["GET"])
 @jwt_required()
 def get_users():
@@ -85,8 +59,7 @@ def get_users():
 
     if page < 1:
       raise ValidationError( "Page must be greater than 0")
-
-    
+ 
 
     if limit < 1 or limit > 100:
       raise ValidationError( "Limit must be between 1 and 100")
@@ -115,12 +88,13 @@ def get_users():
         }
     }), 200
 
-
+# GET USER BY ID ROUTE
 @user_bp.route("/<int:user_id>", methods=["GET"])
 @jwt_required()
 def get_user(user_id):
     user = get_user_by_id(user_id)
 
+    # Validation 
     if user is None:
           raise NotFoundError("User not found")
 

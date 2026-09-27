@@ -27,4 +27,4 @@ def seed():
     db.session.add(admin)
     db.session.commit()
 
-    click.echo("Admin user created successfully.")
+    click.echo("Admin user created successfully")
