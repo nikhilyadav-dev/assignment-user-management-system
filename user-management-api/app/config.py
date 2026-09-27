@@ -1,0 +1,24 @@
+import os
+
+from dotenv import load_dotenv
+from datetime import timedelta
+
+load_dotenv()
+
+
+class Config:
+    SECRET_KEY = os.getenv("SECRET_KEY")
+
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://"
+        f"{os.getenv('MYSQL_USER')}:"
+        f"{os.getenv('MYSQL_PASSWORD')}@"
+        f"{os.getenv('MYSQL_HOST')}:"
+        f"{os.getenv('MYSQL_PORT')}/"
+        f"{os.getenv('MYSQL_DATABASE')}"
+    )
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
