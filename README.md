@@ -4,6 +4,8 @@ A production-oriented REST API for managing users, built with **Flask** and **My
 
 The API provides user management, authentication, role-based authorization, search, pagination, validation, centralized error handling, database migrations, and application logging.
 
+---
+
 ## Features
 
 * RESTful JSON APIs for user management
@@ -22,6 +24,8 @@ The API provides user management, authentication, role-based authorization, sear
 * Database migrations using Flask-Migrate/Alembic
 * Environment-based configuration
 * Application logging with rotating log files
+
+---
 
 ## Tech Stack
 
@@ -82,6 +86,9 @@ user-management-api/
 └── run.py
 ```
 
+---
+
+
 ### Architecture
 
 The application follows a modular structure:
@@ -95,6 +102,31 @@ The application follows a modular structure:
 * **Config** — Loads application and database configuration from environment variables.
 * **Extensions** — Initializes Flask extensions such as SQLAlchemy, JWT, and Flask-Migrate.
 * **Migrations** — Stores database schema migration history.
+
+---
+
+## 🚀 Live Demo
+
+**Live API:** https://user-management-api-system.onrender.com
+
+The hosted API can be tested directly without setting up Python, MySQL, or the project locally.
+
+**Demo Admin Credentials:**
+- Email: `admin@example.com`
+- Password: `Admin@123`
+
+**Quick testing flow:**
+
+1. `POST /auth/login` — Login using the above credentials and get the JWT token.
+2. Use the token as `Authorization: Bearer <access_token>` for protected APIs.
+3. `GET /users` — Access users with search and pagination.
+4. `GET /users/<id>` — Get a specific user.
+5. `POST /users` — Create a new user. **Admin access required.**
+
+The live database already contains the admin user, so you can directly test authentication, protected APIs, and admin-only user creation.
+
+
+---
 
 ## Setup & Installation
 
@@ -284,6 +316,8 @@ User JWT
    ├── GET /users/:id   → Allowed
    └── POST /users      → Forbidden (403)
 ```
+
+---
 
 ## API Endpoints
 
@@ -497,6 +531,8 @@ All application errors follow a consistent structure:
 
 Unexpected server-side errors are logged while the API returns a generic `500 Internal Server Error` response to avoid exposing internal implementation details.
 
+---
+
 ## Database
 
 The application uses **MySQL** with **SQLAlchemy** as the ORM.
@@ -537,6 +573,8 @@ flask db migrate -m "Describe the change"
 
 Review the generated migration before applying it.
 
+---
+
 ## Logging
 
 The application uses Python's logging system with a rotating file handler.
@@ -555,6 +593,8 @@ The logging configuration:
 * Keeps a limited number of backup log files.
 * Logs unexpected application errors with stack traces.
 * Keeps log files out of version control.
+
+  ---
 
 ## Assumptions
 
@@ -588,6 +628,8 @@ The current implementation is designed for the assignment requirements. For a la
 * Containerize the application with Docker where appropriate.
 * Add CI/CD pipelines for automated validation and deployment.
 * Review database indexes and query performance as data volume grows.
+
+---
 
 ## Assignment Questions
 
@@ -654,6 +696,8 @@ Key changes would include:
 9. Add metrics and health checks.
 10. Containerize and deploy using an appropriate production infrastructure.
 
+---
+
 ## AI Usage Declaration
 
 AI tools were used during the development of this assignment as a development and learning aid.
@@ -674,6 +718,8 @@ AI assistance was used for:
 * Understanding JWT authentication and role-based authorization.
 * Reviewing API behavior and edge cases.
 * Assisting with README documentation.
+
+  ---
 
 ### Manual work and modifications
 
