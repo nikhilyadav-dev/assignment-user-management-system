@@ -17,7 +17,7 @@ from app.errors.exceptions import (
 user_bp = Blueprint("users", __name__, url_prefix="/users")
 
 
-# CREAT USER ROUTE
+### CREAT USER ROUTE
 @user_bp.route("", methods=["POST"])
 @admin_required
 def create_user_route():
@@ -48,12 +48,13 @@ def create_user_route():
     }), 201
 
 
-# GET USERS ROUTE
+### GET USERS ROUTE
 @user_bp.route("", methods=["GET"])
 @jwt_required()
 def get_users():
     search = request.args.get("search")
 
+    # Page & Limit Validation 
     page = request.args.get("page", 1, type=int)
     limit = request.args.get("limit", 10, type=int)
 
@@ -88,13 +89,13 @@ def get_users():
         }
     }), 200
 
-# GET USER BY ID ROUTE
+### GET USER BY ID ROUTE
 @user_bp.route("/<int:user_id>", methods=["GET"])
 @jwt_required()
 def get_user(user_id):
     user = get_user_by_id(user_id)
 
-    # Validation 
+    # User Not Found Validation 
     if user is None:
           raise NotFoundError("User not found")
 

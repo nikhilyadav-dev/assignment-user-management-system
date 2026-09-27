@@ -6,18 +6,20 @@ from app.services.auth_service import authenticate_user
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-
+### LOGIN USER ROUTE
 @auth_bp.route("/login", methods=["POST"])
 
 def login():
     data = request.get_json(silent=True)
 
+    # Request Body Validation
     if not data:
         raise ValidationError("Request body is required")
 
     email = data.get("email")
     password = data.get("password")
 
+    # Required Fields Validation
     if not email or not password:
         raise ValidationError("Email and password are required")
 

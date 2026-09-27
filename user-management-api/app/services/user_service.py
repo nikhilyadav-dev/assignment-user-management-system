@@ -7,7 +7,7 @@ from app.services.auth_service import hash_password
 from app.utils.validators import is_valid_email 
 from app.errors.exceptions import ConflictError, ValidationError
 
-
+# CREATE USER SERVICE
 def create_user(name, email, role, password):
 
     # Reuired Field
@@ -26,6 +26,7 @@ def create_user(name, email, role, password):
     if email_exists(email):
       raise ConflictError("Email already exists")
 
+    # Password Hashing
     password_hash = hash_password(password)
 
     user = User(
@@ -35,6 +36,7 @@ def create_user(name, email, role, password):
         password_hash=password_hash
     )
 
+    # DB Faliure Handling
     try:
         db.session.add(user)
         db.session.commit()
@@ -44,7 +46,7 @@ def create_user(name, email, role, password):
 
     return user
 
-
+# GET ALL USERS SERVICE
 def get_all_users(search=None, page=1, limit=10):
     query = User.query
 
@@ -72,9 +74,10 @@ def get_all_users(search=None, page=1, limit=10):
 
     return users, total
 
-
+# GET USER BY ID SERVICE
 def get_user_by_id(user_id):
     return db.session.get(User, user_id)
 
+# UNIQUE EMAIL HELPING FUNCTION
 def email_exists(email):
     return User.query.filter_by(email=email).first() is not None
